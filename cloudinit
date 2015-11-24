@@ -10,4 +10,4 @@ debconf-set-selections <<< 'mariadb-server-10.0 mysql-server/root_password_again
 
 apt-get -y install mariadb-server
 
-tough /tmp/cloudinit_was_run
+touch /tmp/cloudinit_was_run
