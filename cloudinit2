@@ -25,6 +25,6 @@ service mysql stop
 
 wget https://raw.githubusercontent.com/keithtobin/mariadbazure/master/galera.cnf -O /etc/mysql/conf.d/galera.cnf
 
-service mysql start
+#service mysql start
 
 touch /tmp/cloudinit_was_run
