@@ -1,0 +1,8 @@
+#!/bin/bash
+
+dbuser=$1
+dbpass=$2
+
+echo "$dbuser"
+
+

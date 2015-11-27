@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 dbuser=$1
 dbpass=$2
 
