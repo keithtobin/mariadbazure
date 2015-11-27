@@ -81,9 +81,9 @@
 	"vmDnsNameForPublicIP02": "[concat(variables('vmName02'),parameters('deploymentID'))]",
 	"vmDnsNameForPublicIP03": "[concat(variables('vmName03'),parameters('deploymentID'))]",
 	"vmAvailibilitySet": "availabilitySet1",
+	"loadBalancerName": "ktlbme",
+	"lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName'))]",
 	
-
-
   },
   "resources": [
     {
@@ -166,13 +166,19 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
+			 "privateIPAddress": "10.0.0.97",  
+              "privateIPAllocationMethod": "Static",
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('vmPublicIPAddressName01'))]"
               },
               "subnet": {
                 "id": "[variables('subnetRef')]"
-              }
+              },
+			  "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[concat(variables('lbID'), '/backendAddressPools/BackendPool1')]"
+                }
+              ]
             }
           }
         ]
@@ -192,13 +198,19 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAddress": "10.0.0.98",  
+              "privateIPAllocationMethod": "Static",
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('vmPublicIPAddressName02'))]"
               },
               "subnet": {
                 "id": "[variables('subnetRef')]"
-              }
+              },
+			  "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[concat(variables('lbID'), '/backendAddressPools/BackendPool1')]"
+                }
+              ]
             }
           }
         ]
@@ -219,13 +231,19 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAddress": "10.0.0.99",  
+              "privateIPAllocationMethod": "Static",
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('vmPublicIPAddressName03'))]"
               },
               "subnet": {
                 "id": "[variables('subnetRef')]"
-              }
+              },
+			  "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[concat(variables('lbID'), '/backendAddressPools/BackendPool1')]"
+                }
+              ]
             }
           }
         ]
@@ -412,11 +430,110 @@
                 "typeHandlerVersion": "1.2",
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit"
+                        "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit1"
                     ],
-                    "commandToExecute": "sh cloudinit"
+                    "commandToExecute": "/bin/bash cloudinit1"
                 }
             }
-        }
+        },
+		{
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vmName02'),'/installmariadb')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName02'))]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.OSTCExtensions",
+                "type": "CustomScriptForLinux",
+                "typeHandlerVersion": "1.2",
+                "settings": {
+                    "fileUris": [
+                        "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit2"
+                    ],
+                    "commandToExecute": "/bin/bash cloudinit2"
+                }
+            }
+        },
+		{
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vmName03'),'/installmariadb')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName03'))]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.OSTCExtensions",
+                "type": "CustomScriptForLinux",
+                "typeHandlerVersion": "1.2",
+                "settings": {
+                    "fileUris": [
+                        "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit3"
+                    ],
+                    "commandToExecute": "/bin/bash cloudinit3"
+                }
+            }
+        },
+		{
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/loadBalancers",
+      "name": "[variables('loadBalancerName')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[variables('vnetID')]"
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              },
+              "privateIPAddress": "10.0.0.100",
+              "privateIPAllocationMethod": "Static"
+            },
+            "name": "LoadBalancerFrontend"
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "BackendPool1"
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
+              },
+              "protocol": "Tcp",
+              "frontendPort": 3306,
+              "backendPort": 3306,
+              "idleTimeoutInMinutes": 15
+            },
+            "Name": "lbrule"
+          }
+        ],
+        "probes": [
+          {
+            "properties": {
+              "protocol": "Tcp",
+              "port": 3306,
+              "intervalInSeconds": 15,
+              "numberOfProbes": 2
+            },
+            "name": "lbprobe"
+          }
+        ]
+      }
+    }
   ]
 }
