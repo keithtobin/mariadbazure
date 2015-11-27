@@ -2,6 +2,8 @@
 
 set -x
 
+script /tmp/cloudinit.log
+
 dbuser=$1
 dbpass=$2
 
