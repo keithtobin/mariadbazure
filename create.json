@@ -83,6 +83,8 @@
 	"vmAvailibilitySet": "availabilitySet1",
 	"loadBalancerName": "ktlbme",
 	"lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName'))]",
+	"dbUser": "root",
+	"dbPass": "rootpass",
 	
   },
   "resources": [
@@ -432,7 +434,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit1"
                     ],
-                    "commandToExecute": "/bin/bash cloudinit1"
+                    "commandToExecute": "/bin/bash cloudinit1 [variables('dbUser')] [variables('dbPass')]"
                 }
             }
         },
@@ -452,7 +454,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit2"
                     ],
-                    "commandToExecute": "/bin/bash cloudinit2"
+                    "commandToExecute": "/bin/bash cloudinit2 [variables('dbUser')] [variables('dbPass')]"
                 }
             }
         },
@@ -472,7 +474,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit3"
                     ],
-                    "commandToExecute": "/bin/bash cloudinit3"
+                    "commandToExecute": "/bin/bash cloudinit3 [variables('dbUser')] [variables('dbPass')]"
                 }
             }
         },
