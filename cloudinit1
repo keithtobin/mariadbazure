@@ -2,7 +2,7 @@
 
 set -x
 
-script /tmp/cloudinit.log
+exec &> >(tee -i /tmp/cloudinit.log 2>&1)
 
 dbuser=$1
 dbpass=$2
