@@ -1,5 +1,5 @@
 ## Introduction
-This repository containers the files related to the deployment of MariaDB cluster on Microsoft Azure using Azure ARM templates.
+This repository contains the files related to the deployment of MariaDB cluster on Microsoft Azure using Azure ARM templates.
 
 ## Architecture
 The architecture for the MariaDB cluster consists of 3 VM, each VM running a instance of MariaDB with Gelera clustering. These VM nodes form a single active/active MySQL cluster. Each of the VM nodes is deployed in a avaialbiltiy set fault zone to ensure resielence of the cluster by allowing the failure or upgrade of a single node with out affecting the operations of the MySQL cluster operations. The VM and loadbalancer infrasstructure is deployed inside a single region and with in this region the infrastructure is deployed with in a vNET and vNET subnet, the vNET is using a fixed subnet range of 10.0.0.0/24. 
