@@ -160,6 +160,7 @@
       "name": "[variables('vmNicName01')]",
       "location": "[variables('location')]",
       "dependsOn": [
+	    "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
         "[concat('Microsoft.Network/publicIPAddresses/', variables('vmPublicIPAddressName01'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
@@ -192,6 +193,7 @@
       "name": "[variables('vmNicName02')]",
       "location": "[variables('location')]",
       "dependsOn": [
+	    "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
         "[concat('Microsoft.Network/publicIPAddresses/', variables('vmPublicIPAddressName02'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
@@ -224,9 +226,9 @@
       "name": "[variables('vmNicName03')]",
       "location": "[variables('location')]",
       "dependsOn": [
+	    "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
         "[concat('Microsoft.Network/publicIPAddresses/', variables('vmPublicIPAddressName03'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-		"[concat('Microsoft.Compute/availabilitySets/', variables('vmAvailibilitySet'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -258,7 +260,8 @@
       "location": "[variables('location')]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('vmNicName01'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('vmNicName01'))]",
+		"[concat('Microsoft.Compute/availabilitySets/', variables('vmAvailibilitySet'))]"
       ],
       "properties": {
 	    "availabilitySet": {
@@ -434,7 +437,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit1"
                     ],
-                    "commandToExecute": "/bin/bash cloudinit1 [variables('dbUser')] [variables('dbPass')]"
+                    "commandToExecute": "[concat('/bin/bash cloudinit1 ', variables('dbUser'), ' ' , variables('dbPass'))]"
                 }
             }
         },
@@ -454,7 +457,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit2"
                     ],
-                    "commandToExecute": "/bin/bash cloudinit2 [variables('dbUser')] [variables('dbPass')]"
+                    "commandToExecute": "[concat('/bin/bash cloudinit2 ', variables('dbUser'), ' ' , variables('dbPass'))]"
                 }
             }
         },
@@ -474,7 +477,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/keithtobin/mariadbazure/master/cloudinit3"
                     ],
-                    "commandToExecute": "/bin/bash cloudinit3 [variables('dbUser')] [variables('dbPass')]"
+					"commandToExecute": "[concat('/bin/bash cloudinit3 ', variables('dbUser'), ' ' , variables('dbPass'))]"
                 }
             }
         },
