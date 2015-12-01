@@ -19,3 +19,8 @@ Click the following button to start the deployment of this arm template to your 
 To test if the deployment is of MariaDB has being successfull, you can SSH to the VM1 using it's public available IP, after you have sshed you can execute the following command to see the size of the cluster. 
 
 mysql -u root -p  -e "show global status like 'wsrep_cluster_size'
+
+## Debug
+
+### VM Init Process
+During the ARM template process a bash script is executed on each of the VM instances to preform the deployment of the mariaDB packages and also preform some configuration and setup. The bashscript is located in this repositiry 'cloudinit1, cloudinit2, cloudinit3'. Each of these bash scipts are down loaded to the respective VM and executed. During the executing process a log file is created with a log of the bash processs in '/tmp/cloudinit.log'
